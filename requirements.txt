@@ -2,7 +2,7 @@ astroid==3.2.2
 autopep8==2.3.0
 beautifulsoup4==4.12.3
 Brotli==1.0.9
-certifi==2024.6.2
+certifi==2024.7.4
 charset-normalizer==3.3.2
 dill==0.3.8
 exceptiongroup==1.2.1
