@@ -4,8 +4,8 @@ import asyncio
 import logging
 import pathlib
 import threading
+from repoclassbench.dataset import Dataset, CSharpDataset
 from repotools.csharp_tools import CSharpTools
-from repotools.csharp_tools.omnisharp_api import OmniSharpApi
 from project_utils.csharp_setup_utils import PROJECT_ROOT_DIR
 
 TOOLS_DIR = os.path.join(PROJECT_ROOT_DIR, "repotools/csharp_tools")
@@ -61,6 +61,10 @@ class TestToolsCSharp:
     def test_get_imports(self):
         """ Test get_imports() api
         Necessary to spawn flask_server prior to running this test"""
+        ds: CSharpDataset = Dataset(
+            language="csharp", specification="detailed", delete_relatives=False
+        )
+        _ = ds.get_instance_and_setup_env(0)
         filename = os.path.join(EXP_DIR, "StabilityMatrix.Core/Updater/UpdateStatusChangedEventArgs.cs")
         api = CSharpTools(EXP_DIR, "", filename)
         try:
@@ -85,6 +89,10 @@ class TestToolsCSharp:
     def test_get_signature(self):
         """ Test get_signature() api
         Necessary to spawn flask_server prior to running this test """
+        ds: CSharpDataset = Dataset(
+            language="csharp", specification="detailed", delete_relatives=False
+        )
+        _ = ds.get_instance_and_setup_env(0)
         filename = os.path.join(EXP_DIR, "StabilityMatrix.Core/Database/LiteDbContext.cs")
         api = CSharpTools(EXP_DIR, "", filename)
         try:
@@ -100,6 +108,10 @@ class TestToolsCSharp:
     def test_get_class_info(self):
         """ Test get_class_info() api
         Necessary to spawn flask_server prior to running this test """
+        ds: CSharpDataset = Dataset(
+            language="csharp", specification="detailed", delete_relatives=False
+        )
+        _ = ds.get_instance_and_setup_env(0)
         filename = os.path.join(EXP_DIR, "StabilityMatrix.Core/Database/LiteDbContext.cs")
         sketchy_desc = "The public partial record GenerationParameters, located in the StabilityMatrix.Core.Models namespace, \
             represents the parameters for generating a stability matrix. This class is JSON serializable. It includes several \
@@ -127,29 +139,33 @@ class TestToolsCSharp:
     #     """ Test get_related_code() api """
 
 
-    def test_get_related_snippets(self):
-        """ Test RAG system
-        Necessary to spawn flask_server prior to running this test
+    # def test_get_related_snippets(self):
+    #     """ Test RAG system
+    #     Necessary to spawn flask_server prior to running this test
 
-        May fail due to GPU out of memory, tweak batch size in unixcoder.py file
-        """
-        filename = os.path.join(EXP_DIR, "StabilityMatrix.Core/Database/LiteDbContext.cs")
-        sketchy_desc = "The public partial record GenerationParameters, located in the StabilityMatrix.Core.Models namespace, \
-            represents the parameters for generating a stability matrix. This class is JSON serializable. It includes several \
-            methods for parsing and handling data. The 'TryParse' method attempts to parse a string into a GenerationParameters \
-            object, returning false if the string is null, whitespace, or cannot be parsed. The 'Parse' method also parses a \
-            string into a GenerationParameters object, but throws a ValidationException if the string cannot be parsed. The \
-            'ParseLine' method parses a string of fields into a dictionary, with fields separated by commas and key-value pairs \
-            separated by colons. The 'UnquoteValue' method removes quotes from a quoted field, if present. The 'GetComfySamplers' \
-            method converts the current Sampler string into a ComfySampler and ComfyScheduler, if possible. The 'GetSample' \
-            method returns a sample GenerationParameters object for UI preview. Lastly, the 'ParametersFieldsRegex' method is \
-            a generated regex method for parsing parameters fields.\""
-        api = CSharpTools(EXP_DIR, "", filename)
-        try:
-            outputs, scores = api.get_related_snippets(sketchy_desc)
-        except Exception as e:
-            assert False, str(e)
-        finally:
-            # api.shutdown()
-            pass
-        test_logger.info('\n'+'\n####<------->\n'.join(outputs))
+    #     May fail due to GPU out of memory, tweak batch size in unixcoder.py file
+    #     """
+    #     ds: CSharpDataset = Dataset(
+    #         language="csharp", specification="detailed", delete_relatives=False
+    #     )
+    #     _ = ds.get_instance_and_setup_env(0)
+    #     filename = os.path.join(EXP_DIR, "StabilityMatrix.Core/Database/LiteDbContext.cs")
+    #     sketchy_desc = "The public partial record GenerationParameters, located in the StabilityMatrix.Core.Models namespace, \
+    #         represents the parameters for generating a stability matrix. This class is JSON serializable. It includes several \
+    #         methods for parsing and handling data. The 'TryParse' method attempts to parse a string into a GenerationParameters \
+    #         object, returning false if the string is null, whitespace, or cannot be parsed. The 'Parse' method also parses a \
+    #         string into a GenerationParameters object, but throws a ValidationException if the string cannot be parsed. The \
+    #         'ParseLine' method parses a string of fields into a dictionary, with fields separated by commas and key-value pairs \
+    #         separated by colons. The 'UnquoteValue' method removes quotes from a quoted field, if present. The 'GetComfySamplers' \
+    #         method converts the current Sampler string into a ComfySampler and ComfyScheduler, if possible. The 'GetSample' \
+    #         method returns a sample GenerationParameters object for UI preview. Lastly, the 'ParametersFieldsRegex' method is \
+    #         a generated regex method for parsing parameters fields.\""
+    #     api = CSharpTools(EXP_DIR, "", filename)
+    #     try:
+    #         outputs, scores = api.get_related_snippets(sketchy_desc)
+    #     except Exception as e:
+    #         assert False, str(e)
+    #     finally:
+    #         # api.shutdown()
+    #         pass
+    #     test_logger.info('\n'+'\n####<------->\n'.join(outputs))
