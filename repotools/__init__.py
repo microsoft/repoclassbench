@@ -1,6 +1,6 @@
 from repotools.java_tools import JavaTools
 from repotools.python_tools import PythonTools
-# from repotools.csharp_tools import CSharpTools
+from repotools.csharp_tools import CSharpTools
 
 
 class Tools:
