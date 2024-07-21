@@ -4,8 +4,8 @@ from abc import ABC, abstractmethod
 from typing import Optional
 from dataclasses import asdict, dataclass
 
-from LLM.llm_api import LLMAPI
-from config import Config
+# from LLM.llm_api import LLMAPI
+# from config import Config
 
 
 @dataclass
@@ -33,12 +33,13 @@ class BaseEvaluator(ABC):
 
     def content_filer(self, language: str, code: str) -> bool:
         """Returns whether the content is safe to run"""
-        llm_API = LLMAPI(
-            Config.llm_source,
-            open_ai_configs=Config.openai_configs,
-        )
-        response=llm_API.get_response(f"Answer is yes/no only. Is the following code malicious/unsafe to run?CODE:```{language}\n{code}```")
-        print(f"{response=}")
-        if "yes" in response.lower():
-            return False
-        return True
+        raise NotImplementedError()
+        # llm_API = LLMAPI(
+        #     Config.llm_source,
+        #     open_ai_configs=Config.openai_configs,
+        # )
+        # response=llm_API.get_response(f"Answer is yes/no only. Is the following code malicious/unsafe to run?CODE:```{language}\n{code}```")
+        # print(f"{response=}")
+        # if "yes" in response.lower():
+        #     return False
+        # return True

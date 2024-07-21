@@ -1,4 +1,5 @@
 import os
+import pdb
 import time
 import socket
 import atexit
@@ -16,7 +17,7 @@ from .Scorer.unixcoder import UniXcoder
 # Ensure the below import order is not changed
 # csharp_setup_utils module also handles essential env-var setup
 from project_utils.csharp_setup_utils import setup_dotnet, setup_multilspy
-from .omnisharp_api import FQCNKind, OmniSharpApi
+from .fqcn import FQCNKind
 
 def find_free_port() -> int:
     """Function to find a free port starting from start_port."""
@@ -73,6 +74,7 @@ class CSharpTools:
         time.sleep(5)  # Necessary so that gunicorn server has enough time to spin up
         self.repo_root_dir = repo_root_dir
         self.instance_fpath = filename
+        from .omnisharp_api import OmniSharpApi
         self.api = OmniSharpApi(repo_root_dir, filename, port)
         self.no_cousins = False
         self.embedding_model = UniXcoder("microsoft/unixcoder-base")

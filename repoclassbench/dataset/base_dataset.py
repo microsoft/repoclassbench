@@ -12,7 +12,7 @@ class RepoMetadata:
 
     repo_name: str  # The name of the repository
     repo_branch: Optional[str]  # The branch of the repository (optional)
-    repo_commit: Optional[str]  # The commit hash of the repository (optional)    
+    repo_commit: Optional[str]  # The commit hash of the repository (optional)
 
 
 @dataclass
