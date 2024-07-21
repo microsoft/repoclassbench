@@ -60,6 +60,10 @@ class JavaDataset(BaseDataset):
         data_instance = self.data[i]
         if self.delete_relatives:
             raise NotImplementedError("Not implemented yet")
+        
+        ## Delete the working repo
+        if os.path.exists("temp/java/working_repo"):
+            shutil.rmtree("temp/java/working_repo")
 
         ## Copy the original repo to working repo
         shutil.copytree(
@@ -85,7 +89,7 @@ class JavaDataset(BaseDataset):
             ground_truth = file.read()
 
         return TaskData(
-            file=data_instance["file"],
+            file="/".join(data_instance["file"].split("/")[1:]),
             class_name=data_instance["class_name"],
             description=(
                 data_instance["detailed_description"]

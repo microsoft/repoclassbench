@@ -11,7 +11,7 @@ dataset_indices = [f"{f[1]}!{f[0]}" for f in dataset_indices]
 
 
 # TODO: comment
-dataset_indices = dataset_indices[::-30]
+# dataset_indices = dataset_indices[::-30]
 
 
 @pytest.mark.parametrize("test_details", dataset_indices)

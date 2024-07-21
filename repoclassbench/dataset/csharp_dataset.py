@@ -1,30 +1,26 @@
 """CSharp dataset setup"""
 
 import os
+import json
+import gdown
+import shutil
 import pickle
 import pathlib
-import subprocess
 import zipfile
-import json
-import shutil
+from git import Repo
 from typing import Dict
-
-import requests
 from repoclassbench.evaluator.csharp_evaluator import (
     CSharpEvaluationMetadata,
     CSharpEvaluator,
 )
 from repoclassbench.dataset.base_dataset import BaseDataset, TaskData
-import gdown
-from git import Repo
-
+from project_utils.csharp_setup_utils import setup_dotnet, PROJECT_ROOT_DIR, DOTNET_ROOT_DIR
 
 class CSharpDataset(BaseDataset):
     """Class to load the CSharp dataset."""
 
-    repo_container_dir = "temp/csharp/"
-    external_dir = "external/csharp"
-    dotnet_executable_path = os.path.join(external_dir, "dotnet")
+    repo_container_dir = os.path.join(PROJECT_ROOT_DIR, "temp/csharp/")
+    dotnet_executable_path = os.path.join(DOTNET_ROOT_DIR, "dotnet")
     original_repo_dir = os.path.join(repo_container_dir, "original_repo")
     working_repo_dir = os.path.join(repo_container_dir, "working_repo")
     eval_repo_dir = os.path.join(repo_container_dir, "eval_repo")
@@ -37,29 +33,8 @@ class CSharpDataset(BaseDataset):
         # TODO: Check with security team whether external dir can be uploaded to GitHub
         # If yes, below line becomes redundant
         pathlib.Path("external").mkdir(parents=True, exist_ok=True)
-        self._setup_dotnet()
+        setup_dotnet()    # ENV-var setup takes place in csharp_setup_utils automatically
         self._download_data()
-
-    def _setup_dotnet(self) -> None:
-        # r = requests.get("https://dot.net/v1/dotnet-install.sh")
-        # install_script_str = r.content.decode()
-        # script_path = os.path.join(self.repo_container_dir, "dotnet-install.sh")
-        # with open(script_path, "w") as f:
-        #     f.write(install_script_str)
-        # url = 'https://drive.google.com/file/d/1JbiK1ScxS7Y6IkjZhJlbIk0VbXo7BN4k/view?usp=sharing'
-        if pathlib.Path(self.dotnet_executable_path).is_file():
-            return
-        tarball_url = "https://drive.google.com/uc?id=1JbiK1ScxS7Y6IkjZhJlbIk0VbXo7BN4k"
-        gdown.download(
-            tarball_url,
-            os.path.join(self.external_dir, "dotnet-sdk-8.0.301-linux-x64.tar.gz"),
-            quiet=False,
-        )
-        subprocess.check_call(
-            "tar -xzvf dotnet-sdk-8.0.301-linux-x64.tar.gz",
-            shell=True,
-            cwd=self.external_dir,
-        )
 
     def _download_data(self) -> None:
         # If non-empty skip download

@@ -1,6 +1,6 @@
 import os
 from git import Repo, GitCommandError
-from repoclassbench.common_utils import fetch_ist_adjusted_logger
+from project_utils.common_utils import fetch_ist_adjusted_logger
 
 
 logger = fetch_ist_adjusted_logger()

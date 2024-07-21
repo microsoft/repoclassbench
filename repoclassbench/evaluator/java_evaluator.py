@@ -175,8 +175,16 @@ class JavaEvaluator(BaseEvaluator):
     def evaluate(self, code: str) -> EvaluationData:
         """Method to evaluate the code."""
 
+        if not self.content_filer("java", code):
+            raise Exception("Code is malicious")
+        
+        exit()
+
         # Replace the package statement with the correct statement
-        code = re.sub(r"package\s+\S+\s*;", self.correct_package_statement, code)
+        if "package " in code:
+            code = re.sub(r"package\s+\S+\s*;", self.correct_package_statement, code)
+        else:
+            code = self.correct_package_statement + "\n" + code
 
         # Write the code to the file
         with open("temp/java/eval_repo/" + self.file_name, "w") as file:
@@ -309,4 +317,5 @@ class JavaEvaluator(BaseEvaluator):
             compile_status=not compilation_failure,
             error_feedback=java_output,
             formatted_feedback=formatted_feedback,
+            test_status=failed_tests == 0,
         )

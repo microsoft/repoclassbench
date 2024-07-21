@@ -5,8 +5,8 @@ import os
 import json
 from typing import Final
 
-from repoclassbench.constants import PythonConstants
-import repoclassbench.common_utils as utils
+from project_utils.constants import PythonConstants
+import project_utils.common_utils as utils
 from repoclassbench.dataset.python_setup_utils import (
     data_utils,
     swebench_related_constants,
@@ -64,7 +64,9 @@ class PythonEvaluator(BaseEvaluator):
 
     @property
     def CONDA_ENV_PATH(self):
-        return f"/anaconda/envs/{self.CONDA_ENV_NAME}/bin/python"
+        # return f"/anaconda/envs/{self.CONDA_ENV_NAME}/bin/python"
+        return os.path.join(PythonConstants.CONDA_PREFIX, 'envs', self.CONDA_ENV_NAME, 'bin', 'python')
+        # return f"/anaconda/envs/{self.CONDA_ENV_NAME}/bin/python"
 
     @property
     def REPO_NAME(self):
@@ -94,6 +96,13 @@ class PythonEvaluator(BaseEvaluator):
         Returns:
             dict: The evaluation results including parsed and contextually evaluated results.
         """
+
+        if not self.content_filer("python", new_class_gen):
+            raise Exception("Code is malicious")
+        
+        print("Code is not malicious")
+        exit()
+
         # Ensure the repository is in the final runnable state
         self.setup_obj.ensure_final_runnable_state(delete_ground_truth_class=True)
         logger.debug(
@@ -133,6 +142,8 @@ class PythonEvaluator(BaseEvaluator):
                 "contextually_evaluated_result": contextually_evaluated_result,
             },
             formatted_feedback=contextually_evaluated_result["feedback_str"],
+            test_status=(contextually_evaluated_result["summary"]["total"]
+            - contextually_evaluated_result["summary"]["passed"]) == 0,            
         )
 
         return evaluation_results_obj

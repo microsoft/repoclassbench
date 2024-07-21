@@ -6,6 +6,7 @@ import pathlib
 import re
 import shutil
 import subprocess
+
 from repoclassbench.evaluator.base_evaluator import BaseEvaluator, EvaluationData
 from typing import List, Optional, Tuple
 
@@ -62,6 +63,7 @@ class CSharpEvaluator(BaseEvaluator):
                 f"stdbuf -o0 {self.executable_path} clean",
                 shell=True,
                 cwd=self.evaluation_metadata.eval_dir,
+                env=os.environ.copy(),
             )
         except subprocess.CalledProcessError as cpe:
             # TODO: add logging code
@@ -88,7 +90,8 @@ class CSharpEvaluator(BaseEvaluator):
         start_header = "Build FAILED.\n"
         try:
             _ = subprocess.check_output(
-                build_cmd, shell=True, cwd=self.evaluation_metadata.eval_dir
+                build_cmd, shell=True, cwd=self.evaluation_metadata.eval_dir,
+                env=os.environ.copy(),
             ).decode()
         except subprocess.CalledProcessError as e:
             err_msg: str = e.output.decode()
@@ -136,7 +139,8 @@ class CSharpEvaluator(BaseEvaluator):
         )
         try:
             op = subprocess.check_output(
-                test_cmd, cwd=self.final_code_dir, shell=True
+                test_cmd, cwd=self.final_code_dir, shell=True,
+                env=os.environ.copy(),
             ).decode()
             # op = check_output(test_cmd, cwd=self.repo_root_dir).decode()
         except subprocess.CalledProcessError as e:
@@ -187,6 +191,9 @@ class CSharpEvaluator(BaseEvaluator):
 
     def evaluate(self, code: str) -> EvaluationData:
         """Method to evaluate the code."""
+         
+        if not self.content_filer("csharp", code):
+            raise Exception("Code is malicious")
 
         # Write the code to the file
         with open(os.path.join(self.final_code_dir, self.file_name), "w") as file:

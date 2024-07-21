@@ -5,7 +5,7 @@ import zipfile
 import json
 import gdown
 
-from repoclassbench.constants import PythonConstants
+from project_utils.constants import PythonConstants
 from repoclassbench.evaluator.python_evaluator import PythonEvaluator
 from repoclassbench.dataset.base_dataset import BaseDataset, TaskData
 from repoclassbench.dataset.python_setup_utils.python_repo_initializer import (
@@ -47,7 +47,7 @@ class PythonDataset(BaseDataset):
             return
 
         # URL to download the data from
-        data_url = "https://drive.google.com/uc?id=12eRggtWWeoef55EyfcF42QOoBVDCbR9q"
+        data_url = "https://drive.google.com/uc?id=1vWSxDldwIs2Bq9Mfeu6OnOQq3S1otfMv"
         gdown.download(data_url, zip_path_with_repos, quiet=False)
         assert os.path.exists(zip_path_with_repos)
 

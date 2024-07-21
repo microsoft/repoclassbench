@@ -1,7 +1,7 @@
 import json
-from repoclassbench.constants import PythonConstants
+from project_utils.constants import PythonConstants
 import os
-import repoclassbench.common_utils as utils
+import project_utils.common_utils as utils
 from repoclassbench.dataset.python_setup_utils import data_utils
 
 logger = utils.fetch_ist_adjusted_logger()

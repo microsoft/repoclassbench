@@ -6,9 +6,9 @@ import json
 from typing import Dict, List
 import requests
 from copy import deepcopy
-from repoclassbench.common_utils import fetch_ist_adjusted_logger
+from project_utils.common_utils import fetch_ist_adjusted_logger
 import repoclassbench.dataset.python_setup_utils.swebench_related_constants as swebench_related_constants
-from repoclassbench.constants import PythonConstants
+from project_utils.constants import PythonConstants
 
 logger = fetch_ist_adjusted_logger()
 

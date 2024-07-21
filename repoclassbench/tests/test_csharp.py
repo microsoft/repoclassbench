@@ -1,17 +1,21 @@
 import os
 import shutil
 import pathlib
+import traceback
 from repoclassbench.dataset.csharp_dataset import CSharpDataset
 from repoclassbench.dataset import Dataset
 
 
 class TestCSharp:
 
-    # def test_ds_download(self):
-    #     if pathlib.Path(CSharpDataset.repo_container_dir).exists():
-    #         shutil.rmtree(CSharpDataset.repo_container_dir)
-    #     ds = CSharpDataset(specification="detailed", delete_relatives=False)
-    #     assert pathlib.Path(ds.original_repo).exists()
+    def test_csharp_ds_download(self):
+        if pathlib.Path(CSharpDataset.repo_container_dir).exists():
+            shutil.rmtree(CSharpDataset.repo_container_dir)
+        try:
+            ds = CSharpDataset(specification="detailed", delete_relatives=False)
+        except Exception as e:
+            traceback.format_exc()
+        assert pathlib.Path(ds.original_repo_dir).exists()
 
     def test_blank(self):
         """Test with blank input."""

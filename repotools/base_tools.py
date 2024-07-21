@@ -29,4 +29,3 @@ class BaseTools(ABC):
     @abstractmethod
     def get_related_snippets(self, search_string: str) -> str:
         """Returns the repocoder code snippets given the search string"""
-

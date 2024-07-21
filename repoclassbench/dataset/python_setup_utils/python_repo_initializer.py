@@ -9,8 +9,8 @@ from repoclassbench.dataset.python_setup_utils import (
 )
 
 # absolute imports
-from repoclassbench import common_utils as utils
-from repoclassbench.constants import PythonConstants
+from project_utils import common_utils as utils
+from project_utils.constants import PythonConstants
 
 logger = utils.fetch_ist_adjusted_logger()
 
@@ -193,7 +193,8 @@ class PythonRepoInitializer:
     @property
     def CONDA_ENV_PATH(self):
         """Path to the conda environment used for the task"""
-        return f"/anaconda/envs/{self.CONDA_ENV_NAME}/bin/python"
+        return os.path.join(PythonConstants.CONDA_PREFIX, 'envs', self.CONDA_ENV_NAME, 'bin', 'python')
+        # return f"/anaconda/envs/{self.CONDA_ENV_NAME}/bin/python"
 
     @property
     def use_dir_for_dump_path(self):
