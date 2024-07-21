@@ -2,19 +2,17 @@
 
 import os
 import json
-import gdown
 import shutil
 import pickle
+import logging
 import pathlib
-import zipfile
-from git import Repo
 from typing import Dict
 from repoclassbench.evaluator.csharp_evaluator import (
     CSharpEvaluationMetadata,
     CSharpEvaluator,
 )
 from repoclassbench.dataset.base_dataset import BaseDataset, TaskData
-from project_utils.csharp_setup_utils import setup_dotnet, PROJECT_ROOT_DIR, DOTNET_ROOT_DIR
+from project_utils.csharp_setup_utils import setup_dotnet, download_data, PROJECT_ROOT_DIR, DOTNET_ROOT_DIR
 
 class CSharpDataset(BaseDataset):
     """Class to load the CSharp dataset."""
@@ -34,33 +32,7 @@ class CSharpDataset(BaseDataset):
         # If yes, below line becomes redundant
         pathlib.Path("external").mkdir(parents=True, exist_ok=True)
         setup_dotnet()    # ENV-var setup takes place in csharp_setup_utils automatically
-        self._download_data()
-
-    def _download_data(self) -> None:
-        # If non-empty skip download
-        if len(os.listdir(self.original_repo_dir)) > 0:
-            return
-
-        data_url = "https://drive.google.com/uc?id=1B1WM1G7E8Tcy3VpGPIgcKDB8w49zdtql"
-        gdown.download(
-            data_url,
-            os.path.join(self.repo_container_dir, "csharp_repos.zip"),
-            quiet=False,
-        )
-        with zipfile.ZipFile(
-            os.path.join(self.repo_container_dir, "csharp_repos.zip"), "r"
-        ) as zip_ref:
-            zip_ref.extractall(self.repo_container_dir)
-        extracted_folder_path = os.path.join(
-            self.repo_container_dir, "LLMTools_dataset"
-        )
-        os.rename(extracted_folder_path, self.original_repo_dir)
-        # Below code creates a git index for each repo
-        # So, for each task, after a change, we can revert back to the original state
-        for dirpath in os.listdir(self.original_repo_dir):
-            repo = Repo.init(os.path.join(self.original_repo_dir, dirpath))
-            repo.index.add(repo.untracked_files)
-            repo.index.commit("Initial commit")
+        download_data()
 
     def __len__(self) -> int:
         return len(self.data)
@@ -93,7 +65,7 @@ class CSharpDataset(BaseDataset):
                 os.remove(cousin_fpath)
 
         ## Delete the test code. This should only be available during evaluation and not in the working repo.
-        print("Delete all files which are a part of the test suite")
+        logging.warning("Delete all files which are a part of the test suite")
         for test_prefix in data_instance["repo_metadata"]["test_prefix"]:
             for fpath in pathlib.Path(working_repo_path).glob(
                 f"{test_prefix}/" + "**/*.cs"
