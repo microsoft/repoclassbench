@@ -1,0 +1,22 @@
+pip install pdm
+
+
+pdm install --dev
+pip3 install pyvista
+pip3 install pytest
+
+pip3 install sqlalchemy
+pip3 install email-validator
+pip3 install prometheus_client
+pip3 install python-jose
+pip3 install mako
+pip3 install advanced-alchemy
+pip3 install minijinja
+pip3 install opentelemetry-instrumentation-asgi
+pip3 install picologging
+pip3 install structlog
+pip3 install brotli
+pip3 install redis
+pip3 install uvicorn
+python -m pip install pytest-json
+python -m pip install pytest-json-report

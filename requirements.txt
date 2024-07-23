@@ -1,0 +1,16 @@
+pytest==8.2.2
+tree-sitter==0.20.4
+tree-sitter-languages==1.10.2
+gdown==5.1.0
+regex==2024.5.15
+pytz==2024.1
+tiktoken==0.7.0
+GitPython==3.1.43
+pylint==3.2.3
+torch==2.0.1
+transformers==4.26.1
+jedi==0.19.1
+numpy==1.26.4
+urllib3==2.2.1
+gunicorn==22.0.0
+flask==3.0.3
