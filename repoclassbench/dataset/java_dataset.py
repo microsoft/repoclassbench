@@ -21,7 +21,9 @@ class JavaDataset(BaseDataset):
         self.data = json.load(open("data/input/java_data.json", "r"))
         self._download_data()
         ## Extract jdk and maven
-        
+
+        os.makedirs("external/java",exist_ok=True)
+
         if not os.path.exists("external/java/jdk-17.0.6"):
             if not os.path.exists("external/java/jdk-17.0.6.zip"):
                 data_url = "https://drive.google.com/uc?id=1HIJICJgQQvM_LzbSVRdBlQyiD_kY5BNc"
@@ -31,7 +33,7 @@ class JavaDataset(BaseDataset):
         
         if not os.path.exists("external/java/apache-maven-3.8.7"):
             if not os.path.exists("external/java/apache-maven-3.8.7.zip"):
-                data_url = "https://drive.google.com/uc?id=1JFzF2oAzS8D31fhtpn3uIWhhWJTGG"
+                data_url = "https://drive.google.com/uc?id=1JFzF2oAzS8D31fhtpn3uIWhhWJTGG-5i"
                 gdown.download(data_url, "external/java/apache-maven-3.8.7.zip", quiet=False)                        
             with zipfile.ZipFile(
                 "external/java/apache-maven-3.8.7.zip", "r"
@@ -49,6 +51,8 @@ class JavaDataset(BaseDataset):
     def _download_data(self) -> None:
         if os.path.exists("temp/java/original_repo"):
             return
+        
+        os.makedirs("temp/java",exist_ok=True)
 
         data_url = "https://drive.google.com/uc?id=16ZeWM_wKfeBfm7rvsBnksbVJZuLAZ1yo"
         gdown.download(data_url, "temp/java/java_repos.zip", quiet=False)
