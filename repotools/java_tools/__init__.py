@@ -25,6 +25,8 @@ class JavaTools(BaseTools):
         
         assert file_path is not None, "file_path cannot be None"
 
+        os.makedirs("external/java",exist_ok=True)
+
         if not os.path.exists("external/java/jdk-17.0.6"):
             if not os.path.exists("external/java/jdk-17.0.6.zip"):
                 data_url = "https://drive.google.com/uc?id=1HIJICJgQQvM_LzbSVRdBlQyiD_kY5BNc"
