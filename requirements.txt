@@ -1,4 +1,4 @@
-pytest==8.2.2
+pytest==9.0.3
 tree-sitter==0.20.4
 tree-sitter-languages==1.10.2
 gdown==5.2.2
