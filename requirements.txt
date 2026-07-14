@@ -5,7 +5,7 @@ gdown==5.1.0
 regex==2024.5.15
 pytz==2024.1
 tiktoken==0.7.0
-GitPython==3.1.43
+GitPython==3.1.50
 pylint==3.2.3
 torch==2.0.1
 transformers==5.5.0
