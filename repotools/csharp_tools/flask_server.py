@@ -13,6 +13,7 @@ from flask import Flask, request, jsonify
 from project_utils.csharp_setup_utils import PROJECT_ROOT_DIR
 
 exp_dir = os.path.join(PROJECT_ROOT_DIR, "temp/csharp/working_repo/StabilityMatrix/")
+allowed_root_dir = str(pathlib.Path(exp_dir).resolve())
 
 from .monitors4codegen.multilspy import SyncLanguageServer                # type: ignore
 from .monitors4codegen.multilspy.multilspy_config import MultilspyConfig  # type: ignore
@@ -35,6 +36,15 @@ OMNISHARP_ISALIVE = False
 server_logger = app.logger.getChild("flask_server")
 server_logger.setLevel(logging.DEBUG)
 
+def _validate_filename(filename: str) -> str:
+    rel_path = os.path.relpath(filename, allowed_root_dir) if os.path.isabs(filename) else filename
+    candidate = os.path.normpath(os.path.join(allowed_root_dir, rel_path))
+    if not candidate.startswith(allowed_root_dir + os.sep):
+        raise ValueError(f"Filepath outside allowed root: {filename}")
+    if not os.path.isfile(candidate):
+        raise ValueError(f"Invalid filepath provided {filename}")
+    return candidate
+
 # Uncomment to enable server logging
 # os.makedirs("./csharp_server_logs", exist_ok=True)
 # logfile_path = f"./csharp_server_logs/{str(uuid.uuid4())[:8]}.txt"
@@ -46,10 +56,7 @@ def initialize():
     global OLD_CODE_CACHE, LOOP, LOOP_THREAD, CTX, SLSP, OMNISHARP_ISALIVE
     if request.method == "POST":
         json_data = request.json
-        filename:str = json_data['filename']  # abs filepath
-        if not pathlib.Path(filename).is_file():
-            server_logger.error(f"Invalid filepath provided {filename}")
-            raise Exception
+        filename = _validate_filename(json_data['filename'])  # abs filepath
         server_logger.info(f"Initializing with filename {filename}")
         if OMNISHARP_ISALIVE == True:
             server_logger.info("Omnisharp is already alive")
@@ -92,10 +99,7 @@ def shutdown():
 def reset():
     if request.method == "POST":
         json_data = request.json
-        filename:str = json_data['filename']
-        if not pathlib.Path(filename).is_file():
-            server_logger.error(f"Invalid filepath provided {filename}")
-            raise Exception
+        filename = _validate_filename(json_data['filename'])
         with SLSP.open_file(filename):
             SLSP.update_open_file(filename, OLD_CODE_CACHE)
         server_logger.info(f"reset for {filename}")
@@ -110,9 +114,10 @@ def get_signature_help():
     NUM_RETRIES = 3
     if request.method == 'POST':
         json_data = request.json
-        filename = json_data['filename']  # abs filepath
-        if not pathlib.Path(filename).is_file():
-            server_logger.error(f"Invalid filepath provided {filename}")
+        try:
+            filename = _validate_filename(json_data['filename'])  # abs filepath
+        except ValueError:
+            server_logger.error(f"Invalid filepath provided {json_data['filename']}")
             return jsonify([])
         server_logger.info(f"getSignatureHelp for {filename}")
         code = json_data['code']
@@ -155,10 +160,7 @@ def get_completions():
     NUM_RETRIES = 3
     if request.method == 'POST':
         json_data = request.json
-        filename = json_data['filename']  # abs filepath
-        if not pathlib.Path(filename).is_file():
-            server_logger.error(f"Invalid filepath provided {filename}")
-            raise Exception
+        filename = _validate_filename(json_data['filename'])  # abs filepath
         server_logger.info(f"getCompletions for {filename}")
         code = json_data['code']
         lineno = json_data['lineno']
@@ -228,11 +230,8 @@ def get_imports():
         # Ghost filepath is in the exp dir
         # true filepath is in the copy dir
         json_data = request.json
-        filename = json_data['filename']  # abs filepath
+        filename = _validate_filename(json_data['filename'])  # abs filepath
         server_logger.info(f"getImports for {filename}")
-        if not pathlib.Path(filename).is_file():
-            server_logger.error(f"Invalid filepath provided {filename}")
-            raise Exception
         code = json_data['code']
         server_logger.debug(f"Code:\n{code}")
         file_uri = pathlib.Path(filename).as_uri()
@@ -378,4 +377,3 @@ atexit.register(cleanup)
 
 if __name__ == '__main__':
     app.run(debug=False)
-
