@@ -12,5 +12,5 @@ transformers==5.10.1
 jedi==0.19.1
 numpy==1.26.4
 urllib3==2.8.0
-gunicorn==23.0.0
+gunicorn==26.2.0
 flask==3.1.3
