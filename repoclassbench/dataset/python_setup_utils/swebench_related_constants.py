@@ -1,7 +1,15 @@
 MAP_VERSION_TO_INSTALL_SKLEARN = {
     k: {
         "python": "3.6",
-        "packages": "numpy scipy cython pytest pandas matplotlib",
+        # NOTE: pin cython=0.29.36 and numpy=1.26.4 - these older sklearn
+        # releases predate Cython 3's breaking syntax changes and NumPy 2's
+        # C API changes, and unpinned "cython"/"numpy" now resolve to the
+        # latest releases, which fail to compile their .pyx sources. (Avoid
+        # a "<" version constraint here: the generated bash install script is
+        # passed through two rounds of shell parsing - template substitution,
+        # then `eval` inside run_command - so an unquoted/quoted "<" still
+        # ends up misparsed as I/O redirection.)
+        "packages": "numpy=1.26.4 scipy cython=0.29.36 pytest pandas matplotlib",
         "install": "pip install -v --no-use-pep517 --no-build-isolation -e .",
     }
     for k in ["0.20", "0.21", "0.22"]
@@ -10,7 +18,7 @@ MAP_VERSION_TO_INSTALL_SKLEARN.update(
     {
         k: {
             "python": "3.7",
-            "packages": "numpy scipy cython pytest pandas matplotlib",
+            "packages": "numpy=1.26.4 scipy cython=0.29.36 pytest pandas matplotlib",
             "install": "pip install -v --no-use-pep517 --no-build-isolation -e .",
         }
         for k in ["0.23", "0.24"]
@@ -20,7 +28,7 @@ MAP_VERSION_TO_INSTALL_SKLEARN.update(
     {
         k: {
             "python": "3.9",
-            "packages": "numpy scipy cython pytest pandas matplotlib joblib threadpoolctl",
+            "packages": "numpy=1.26.4 scipy cython=0.29.36 pytest pandas matplotlib joblib threadpoolctl",
             "install": "pip install -v --no-use-pep517 --no-build-isolation -e .",
         }
         for k in ["1.0", "1.1", "1.2", "1.3", "1.4"]
