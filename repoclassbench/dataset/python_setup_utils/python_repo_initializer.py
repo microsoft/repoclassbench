@@ -2,6 +2,7 @@ from typing import Final
 import os
 import json
 import sys
+import shutil
 from repoclassbench.dataset.python_setup_utils import (
     data_utils,
     git_related_utils,
@@ -33,7 +34,13 @@ def fetch_linter_errors(file_name):
     # Get the path to the current Python executable, assuming it's within the conda environment
     env_path = sys.executable
     assert "/bin/python" in env_path
-    env_path = env_path.replace("/bin/python", "")
+    # NOTE: sys.executable can be a version-suffixed binary (e.g. ".../bin/python3.10")
+    # rather than the bare ".../bin/python". A naive string replace of "/bin/python"
+    # would then leave a trailing version suffix stuck onto the env dir name (e.g.
+    # ".../envs/myenv3.10" instead of ".../envs/myenv"), which later fails conda
+    # activation since no such environment exists. Strip the two trailing path
+    # components instead so this works regardless of the interpreter binary name.
+    env_path = os.path.dirname(os.path.dirname(env_path))
 
     logger.debug("Going to find linter errors for file: %s", file_name)
     # logger.debug("File content is: %s", file_content)  # Uncomment for debugging
@@ -250,7 +257,10 @@ class PythonRepoInitializer:
             )
             logger.debug(f"Repo dir: {self.REPO_DIR} copied from: {_copy_path}")
             assert os.path.exists(_copy_path)
-            os.system("cp -r %s %s" % (_copy_path, self.REPO_DIR))
+            # Use shutil.copytree instead of the Unix-only "cp -r" shell
+            # command so this works cross-platform (e.g. on Windows where
+            # "cp" is not available).
+            shutil.copytree(_copy_path, self.REPO_DIR, dirs_exist_ok=True)
 
         self.commit_id = self.REPOTOOLS_ELEM["repo_metadata"]["commit_id"]
 

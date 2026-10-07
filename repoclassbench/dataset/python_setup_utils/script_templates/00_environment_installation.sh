@@ -35,6 +35,12 @@ run_command {pip_cmd}
 
 conda activate {env_name}
 
+# Some per-task install commands (see swebench_related_constants.py) use the
+# legacy "--no-use-pep517" pip flag, which pip removed in 23.1+. These task
+# definitions were authored against older pip releases, so pin pip to a
+# version that still understands that flag before running the real install.
+python3 -m pip install "pip<23.1" -q
+
 ###########################
 # Check if CONDA_SHLVL is exactly 1
 if [ "$CONDA_SHLVL" != "1" ]; then

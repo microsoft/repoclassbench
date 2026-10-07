@@ -61,8 +61,17 @@ class PythonConstants(Constants):
 
 
     # CONDA PREFIX
-    CONDA_PREFIX = os.environ.get('CONDA_ROOT', get_conda_prefix()) 
-    assert(os.path.exists(CONDA_PREFIX))
+    # NOTE: The Python evaluation harness provisions a dedicated conda
+    # environment per benchmark task (see python_repo_initializer.py) and is
+    # therefore inherently dependent on a working conda installation (plus a
+    # POSIX shell for the generated activation scripts). If conda isn't
+    # installed/discoverable, we no longer hard-crash at import time -
+    # CONDA_PREFIX is left as None and any code path that actually needs it
+    # will raise a clear error when used, instead of preventing the whole
+    # package (including conda-independent functionality) from being imported.
+    CONDA_PREFIX = os.environ.get('CONDA_ROOT', get_conda_prefix())
+    if CONDA_PREFIX is not None and not os.path.exists(CONDA_PREFIX):
+        CONDA_PREFIX = None
 
 
     # for caching tool outputs
