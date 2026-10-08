@@ -10,7 +10,7 @@ pylint==4.1.2
 torch==2.13.0
 transformers==5.10.1
 jedi==0.20.0
-numpy==1.26.4
+numpy==2.5.3
 urllib3==2.8.0
 gunicorn==26.2.0
 flask==3.1.3
