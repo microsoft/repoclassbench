@@ -7,7 +7,7 @@ pytz==2024.1
 tiktoken==0.14.0
 GitPython==3.2.0
 pylint==4.1.2
-torch==2.13.0
+torch==2.14.1
 transformers==5.18.0
 jedi==0.20.0
 numpy==2.5.3
