@@ -1,7 +1,7 @@
 pytest==9.0.3
 tree-sitter==0.20.4
 tree-sitter-languages==1.10.2
-gdown==5.2.2
+gdown==6.4.1
 regex==2026.9.29
 pytz==2024.1
 tiktoken==0.14.0
