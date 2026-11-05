@@ -3,7 +3,7 @@ tree-sitter==0.26.0
 tree-sitter-languages==1.10.2
 gdown==6.4.2
 regex==2026.9.29
-pytz==2026.5
+pytz==2026.6
 tiktoken==0.14.0
 GitPython==3.2.1
 pylint==4.1.3
