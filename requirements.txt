@@ -6,7 +6,7 @@ regex==2026.11.9
 pytz==2026.6
 tiktoken==0.14.0
 GitPython==3.2.1
-pylint==4.1.3
+pylint==4.1.4
 torch==2.15.0
 transformers==5.22.2
 jedi==0.20.1
